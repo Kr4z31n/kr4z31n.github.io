@@ -8,6 +8,7 @@ media_subpath: /assets/postimg/R3CTF25/
 image: R3CTF25.png
 path: R3CTF25.png
 alt: "R3CTF - 2025"
+tags: [Questionnare,DFIR,R3CTF25,Disk]
 ---
 
 ## DFIR 2025 Ⅰ: Lost In Router [Forensics]
